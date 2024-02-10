@@ -39,16 +39,35 @@
                                 <div class="row">
                                     <div class="col-xxl">
                                         
-                                                <form  formGroup="socialForm" class="needs-validation" novalidate>
+                                                <form [formGroup]="socialForm"  class="needs-validation" novalidate>
                                                     <div class="row form-group">
                                                           <div class="col-xxl-12">
                                                           
                                                                   <label for="name" class="form-label">Renk Adı <span class="text-danger">*</span></label>
                                                                   <div class="input-group  has-validation">
                                                                   <input type="text" formControlName="name" class="form-control " id="name" placeholder="Renk Adı" required 
+                                                                  [ngClass]="{'is-invalid': submit && socialForm.controls['name'].errors}"
                                                                  >
                                                                       <div class="invalid-feedback">
                                                                           Rengin Adı boş bırakılamaz.
+                                                                      </div>
+                                                                  </div>
+                                                                  <label for="name" class="form-label">Renk Adı <span class="text-danger">*</span></label>
+                                                                  <div class="input-group  has-validation">
+                                                                  <input type="text" formControlName="link" class="form-control " id="name" placeholder="Link" required 
+                                                                  [ngClass]="{'is-invalid': submit && socialForm.controls['link'].errors}"
+                                                                 >
+                                                                      <div class="invalid-feedback">
+                                                                          Link boş bırakılamaz.
+                                                                      </div>
+                                                                  </div>
+                                                                  <label for="name" class="form-label">Renk Adı <span class="text-danger">*</span></label>
+                                                                  <div class="input-group  has-validation">
+                                                                  <input type="text" formControlName="content" class="form-control " id="name" placeholder="Açıklama" required 
+                                                                  [ngClass]="{'is-invalid': submit && socialForm.controls['content'].errors}"
+                                                                 >
+                                                                      <div class="invalid-feedback">
+                                                                          Açıklama boş bırakılamaz.
                                                                       </div>
                                                                   </div>
                                                           </div>
@@ -58,7 +77,7 @@
                                                         <div class="col-lg-12 mt-3">
                                                             <div class="hstack gap-2 justify-content-end">
                                                                 <button type="button" class="btn btn-light" (click)="modalRef?.hide()">Vazgeç</button>
-                                                                <button type="submit"  class="btn btn-subtle-primary">Oluştur</button>
+                                                                <button type="submit" (click)="addModel()"  class="btn btn-subtle-primary">Oluştur</button>
                                                             </div>
                                                           
                                                         </div>

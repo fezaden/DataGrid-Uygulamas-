@@ -10,22 +10,29 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 })
 export class SocialFirebaseRepository extends SocialMediaService {
 
+  
   constructor(private firestore: AngularFirestore) {
     super();
   }
-
+  
   override getList(): Observable<SocialModel[]> {
     return this.firestore.collection<SocialModel>('socialList').valueChanges();
   }
-
+  
   override addSocial(model: SocialModel): Observable<boolean> {
-    return from(this.firestore.collection<SocialModel>('socialList').add(model)
-      .then(() => true)
-      .catch((error) => {
-        console.error('Error adding social:', error);
-        return false;
-      })
-    );
+    return new Observable<boolean>(observer => {
+      this.firestore.collection<SocialModel>('socialList').add(model)
+        .then(() => {
+          observer.next(true);
+          observer.complete();
+        })
+        .catch(error => {
+          console.error('Error adding social:', error);
+          observer.next(false);
+          observer.complete();
+        });
+    });
   }
+  
 
 }

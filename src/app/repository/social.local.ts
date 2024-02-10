@@ -5,19 +5,38 @@ import { SocialModel } from '../models/social.model';
 
 
 var defaultSocialList: SocialModel[] = [
-    new SocialModel(),
 ];
 
 @Injectable({ providedIn: 'root' })
 export class SocialLocalRepository extends SocialMediaService {
 
+
+    private localStorageKey = 'socialList';
+
+    constructor() {
+      super();
+      this.loadFromLocalStorage();
+    }
+  
     override getList(): Observable<SocialModel[]> {
-        return of(defaultSocialList)
+        this.loadFromLocalStorage();
+      return of(defaultSocialList);
     }
-
+  
     override addSocial(model: SocialModel): Observable<boolean> {
-        defaultSocialList.push(model);
-        return of(true);
+      defaultSocialList.push(model);
+      this.saveToLocalStorage();
+      return of(true);
     }
-
+  
+    private loadFromLocalStorage() {
+      const data = localStorage.getItem(this.localStorageKey);
+      if (data) {
+        defaultSocialList = JSON.parse(data);
+      }
+    }
+  
+    private saveToLocalStorage() {
+      localStorage.setItem(this.localStorageKey, JSON.stringify(defaultSocialList));
+    }
 }

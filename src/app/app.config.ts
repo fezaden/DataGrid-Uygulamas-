@@ -9,13 +9,16 @@ import { initializeApp } from 'firebase/app';
 import { environment } from '../environments/environment.development';
 import { AngularFireModule } from '@angular/fire/compat';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     
-    provideRouter(routes), provideHttpClient(),
+    provideRouter(routes), 
     importProvidersFrom([
       provideFirebaseApp(() => initializeApp(environment)),
+      provideFirestore(() => getFirestore()),
       ModalModule.forRoot()
     
     ]),]

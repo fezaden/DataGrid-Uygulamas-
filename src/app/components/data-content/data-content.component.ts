@@ -7,7 +7,7 @@ import { SocialModel } from '../../models/social.model';
 import { SocialLocalRepository } from '../../repository/social.local';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { AngularFirestoreModule, SETTINGS } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +20,9 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     CommonModule,
     FormsModule,
     ReactiveFormsModule, 
-  
-  ],
-  providers: [BsModalService,BsModalRef,FormGroup,FormBuilder],
+    AngularFirestoreModule,
+    
+  ], 
   templateUrl: './data-content.component.html',
   styleUrl: './data-content.component.css',
   encapsulation: ViewEncapsulation.None,
@@ -34,23 +34,19 @@ export class DataContentComponent {
 
   dataList: SocialModel[] = [];
   submit: boolean = false;
-  socialForm: FormGroup<any> | undefined;
+  socialForm!: FormGroup;
   modalRef?: BsModalRef;
   @ViewChild('showModal', { static: false }) showModal?: ModalDirective;
   constructor(private service: SocialLocalRepository,private modalService: BsModalService,  private formBuilder: FormBuilder){
-
   }
   ngOnInit(){
     this.fetchList();
-
   }
-
   createSocialForm() {
     this.socialForm = this.formBuilder.group({
       name:  ['', Validators.required],
       link:  ['', Validators.required],
       content:  ['', Validators.required],
-      
     })
   }
  
@@ -58,7 +54,6 @@ export class DataContentComponent {
     this.createSocialForm();
     this.modalRef = this.modalService.show(template);
   }
-  
   ColumnMode = ColumnMode;
 
   fetchList() {
@@ -66,11 +61,21 @@ export class DataContentComponent {
       this.dataList = data
     });
   }
-
-  addModel(model: SocialModel) {
-    this.service.addSocial(model);
-    this.fetchList();
+  addModel() {
+    if(this.socialForm.valid){
+        let social: SocialModel = Object.assign({}, this.socialForm.value);
+        this.service.addSocial(social).subscribe(result => {
+        if(result) {
+          this.fetchList();
+        } else {
+          console.error('Adding social failed.');
+        }
+      });
+    }
+    
   }
+  
+  
 
   updateFilter(event:any) {
     /*const val = event.target.value.toLowerCase();
@@ -85,4 +90,5 @@ export class DataContentComponent {
     // Whenever the filter changes, always go back to the first page
     this.table.offset = 0;*/
   }
+
 }
